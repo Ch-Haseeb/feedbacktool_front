@@ -67,34 +67,31 @@ router.beforeEach((to, from, next) => {
   }
 });
 router.beforeEach((to, from, next) => {
-  // Check if the user is trying to access a protected route
   if (to.matched.some(record => record.meta.layout === "admin")) {
-    // Wait for the token to be available in local storage
     const tokenPromise = new Promise((resolve) => {
       const checkToken = () => {
         const token = localStorage.getItem("token");
         if (token) {
           resolve(token);
         } else {
-          setTimeout(checkToken, 100); // Check again after a short delay
+          setTimeout(checkToken, 100); 
         }
       };
       checkToken();
     });
 
-    // Once the token is available, continue navigation
+  
     tokenPromise.then(token => {
       if (token) {
         next();
       } else {
-        next("/login"); // Redirect to the login path if no token is available
+        next("/login"); 
       }
     });
   } else {
-    // For routes that do not require admin layout, check for the token and redirect accordingly
     const token = localStorage.getItem("token");
     if (token && (to.path === "/register" || to.path === "/login")) {
-      next("/"); // Replace "/" with the path of your dashboard route
+      next("/"); 
     } else {
       next();
     }
